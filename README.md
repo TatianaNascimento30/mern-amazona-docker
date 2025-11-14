@@ -4,14 +4,14 @@ Primeira entrega do Desafio de Novembro
 Entrega desta etapa: Backend + Frontend + MongoDB, tudo funcionando via Docker.
 
 O que foi entregue
-✔ Backend Node.js funcionando via Docker
-✔ Frontend React funcionando via Docker
-✔ Banco MongoDB em container
-✔ API funcional (/api/products)
-✔ Rota de seed funcionando (/api/products/seed)
-✔ Nginx servindo o frontend e roteando corretamente
-✔ Arquitetura totalmente containerizada
-📁 Estrutura do projeto
+Backend Node.js funcionando via Docker
+Frontend React funcionando via Docker
+Banco MongoDB em container
+API funcional (/api/products)
+Rota de seed funcionando (/api/products/seed)
+Nginx servindo o frontend e roteando corretamente
+Arquitetura totalmente containerizada
+Estrutura do projeto
 mern-amazona/
  ├── backend/
  │   ├── models/
@@ -68,10 +68,10 @@ Não precisa instalar nada localmente
 
 Testes básicos antes da equipe continuar
 
-✔ Navegar no frontend
-✔ Ver produtos listados
-✔ A chamada /api/products retorna os itens
-✔ Seed funcionando
-✔ Tudo já testado e funcionando
+Navegar no frontend
+Ver produtos listados
+A chamada /api/products retorna os itens
+Seed funcionando
+Tudo já testado e funcionando
 
 Desenvolvido pelo time para o Desafio de Novembro
