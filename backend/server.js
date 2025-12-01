@@ -7,13 +7,38 @@ import productRouter from "./routes/productRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
 import uploadRouter from "./routes/uploadRoutes.js";
+import Product from "./models/productModel.js";
+import data from "./data.js";
 
 dotenv.config();
 
+// 👉 seed automático se o banco estiver vazio
+async function seedIfNeeded() {
+  try {
+    const productsCount = await Product.countDocuments();
+    if (productsCount === 0) {
+      console.log("No products found in DB. Running seed...");
+      await Product.insertMany(data.products);
+      console.log("Seed completed ✅");
+    } else {
+      console.log(
+        `DB already has ${productsCount} products. Skipping seed.`
+      );
+    }
+  } catch (err) {
+    console.error("Error while running seed on startup:", err);
+  }
+}
+
 mongoose
   .connect(process.env.MONGODB_URI)
-  .then(() => {
+  .then(async () => {
     console.log("connected to db");
+
+    // controla pelo .env se vai rodar o seed automático ou não
+    if (process.env.AUTO_SEED === "true") {
+      await seedIfNeeded();
+    }
   })
   .catch((err) => {
     console.log(err.message);
