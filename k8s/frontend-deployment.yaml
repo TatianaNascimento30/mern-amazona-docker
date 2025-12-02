@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: mern-amazona-frontend:latest
+          image: tatiananascimento30/mern-frontend:latest
           ports:
             - containerPort: 3000
