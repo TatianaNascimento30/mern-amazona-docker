@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: mern-amazona-backend:latest
+          image: tatiananascimento30/mern-backend:latest
           ports:
             - containerPort: 4000
           env:
