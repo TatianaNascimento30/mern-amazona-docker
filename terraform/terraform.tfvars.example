@@ -1,0 +1,10 @@
+# Região padrão da AWS usada pelo time
+aws_region = "us-east-2"
+
+# Nome lógico do cluster EKS do desafio
+cluster_name = "time-b-eks"
+
+# Tamanho desejado do node group (quando formos usar Terraform para criar)
+desired_capacity = 1
+min_size        = 1
+max_size        = 1
