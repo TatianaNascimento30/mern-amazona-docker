@@ -7,7 +7,7 @@ node_modules/
 .pnp/
 .pnp.js
 
-# Env files
+# Env files (NUNCA commitá-los)
 .env
 .env.local
 .env.development.local
@@ -30,6 +30,15 @@ build/
 
 
 # ----------------------------------------
+# DOCKER
+# ----------------------------------------
+
+# Arquivos criados pelo Docker
+docker-volume/
+*.tar
+
+
+# ----------------------------------------
 # TERRAFORM
 # ----------------------------------------
 
@@ -41,10 +50,14 @@ build/
 *.tfstate.backup
 .terraform.tfstate.lock.info
 
+# Arquivos de variáveis (também podem conter segredos!)
+*.tfvars
+*.auto.tfvars
+
 # Arquivos de erro/lock/crash
 crash.log
 
-# Arquivos de override (sobrescrevem config localmente)
+# Arquivos de override (não devem ir para o repositório)
 override.tf
 override.tf.json
 *_override.tf
@@ -53,3 +66,10 @@ override.tf.json
 # Arquivos gerados automaticamente
 .terraformrc
 terraform.rc
+
+
+# ----------------------------------------
+# VS CODE
+# ----------------------------------------
+
+.vscode/
