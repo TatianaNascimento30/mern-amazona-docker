@@ -6,6 +6,8 @@ spec:
   selector:
     app: frontend
   ports:
-    - port: 3000
+    - name: http
+      port: 3000
       targetPort: 3000
-  type: LoadBalancer
+      protocol: TCP
+  type: ClusterIP
