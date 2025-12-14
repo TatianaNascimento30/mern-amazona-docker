@@ -20,10 +20,35 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 4000
-          env:
-            - name: MONGODB_URI
-              value: "mongodb://mongo:27017/amazona"
-            - name: JWT_SECRET
-              value: "somethingsecret"
-            - name: PORT
-              value: "4000"
+
+          envFrom:
+            - configMapRef:
+                name: backend-config
+            - secretRef:
+                name: backend-secret
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
+
+          readinessProbe:
+            httpGet:
+              path: /api/products
+              port: 4000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 6
+
+          livenessProbe:
+            httpGet:
+              path: /api/products
+              port: 4000
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            timeoutSeconds: 2
+            failureThreshold: 3
