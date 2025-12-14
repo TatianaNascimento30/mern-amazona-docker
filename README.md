@@ -1,112 +1,51 @@
-MERN Amazona — Arquitetura com Docker
-Primeira entrega do Desafio de Novembro
+# MERN Amazona — Arquitetura Containerizada
 
-Entrega desta etapa: Backend + Frontend + MongoDB, tudo funcionando via Docker.
+Projeto desenvolvido para o **Super Desafio Mensal**, com foco na construção de uma **arquitetura integrada e funcional** utilizando Docker, Kubernetes, CI/CD e Infrastructure as Code.
 
-O que foi entregue
-Backend Node.js funcionando via Docker
-Frontend React funcionando via Docker
-Banco MongoDB em container
-API funcional (/api/products)
-Rota de seed funcionando (/api/products/seed)
-Nginx servindo o frontend e roteando corretamente
-Arquitetura totalmente containerizada
-Estrutura do projeto
-mern-amazona/
- ├── backend/
- │   ├── models/
- │   ├── routes/
- │   ├── server.js
- │   ├── data.js
- │   └── Dockerfile
- ├── frontend/
- │   ├── public/
- │   ├── src/
- │   ├── nginx.conf
- │   └── Dockerfile
- ├── docker-compose.yml
- └── README.md
+---
 
-Como rodar o projeto (Docker)
-1) Subir todos os serviços
+## Objetivo
+Projetar e implementar uma arquitetura moderna para uma aplicação MERN, integrando:
+- Containers Docker
+- Orquestração com Kubernetes (EKS)
+- CI/CD com GitHub Actions
+- Segurança no pipeline (SAST, SCA, IaC)
+- Terraform como base de IaC
+
+---
+
+## Visão Geral da Arquitetura
+- **Frontend:** React  
+- **Backend:** Node.js / Express  
+- **Banco:** MongoDB  
+- **Containers:** Docker  
+- **Orquestração:** Kubernetes (AWS EKS)  
+- **CI/CD:** GitHub Actions  
+- **IaC:** Terraform  
+
+Detalhes completos da arquitetura estão em `docs/`.
+
+---
+
+## Executar localmente com Docker
+```bash
 docker compose up -d --build
+Acessos
+Frontend: http://localhost:3000
 
-2) Verificar containers
-docker ps
+Backend: http://localhost:4000/api/products
 
+Kubernetes (EKS)
+A aplicação foi implantada em um cluster Kubernetes no AWS EKS utilizando manifests declarativos.
 
-Você deve ver:
+Detalhes: docs/kubernetes.md
 
-backend
+Terraform
+O Terraform é utilizado para validação e padronização da infraestrutura, além de servir como base para evolução futura de IaC completo.
 
-frontend
+Detalhes: docs/terraform.md
 
-mongo
+Evidências
+Prints e validações estão documentados em docs/evidencias.md.
 
-network criada
-
-Como acessar
-Frontend
-
-http://localhost:3000
-
-Backend (API)
-
-http://localhost:4000/api/products
-
-Seed (popular o banco)
-
-http://localhost:4000/api/products/seed
-
-Banco de Dados
-
-MongoDB sobe automaticamente no container
-
-Volume persistente criado via Docker
-
-Não precisa instalar nada localmente
-
-Testes básicos antes da equipe continuar
-
-Navegar no frontend
-Ver produtos listados
-A chamada /api/products retorna os itens
-Seed funcionando
-Tudo já testado e funcionando
-
-Desenvolvido pelo time para o Desafio de Novembro
-
-## Infraestrutura (EKS + Kubernetes + Terraform)
-
-- Cluster Kubernetes rodando no **AWS EKS** (criado inicialmente via console).
-- Aplicação MERN (frontend, backend, MongoDB) empacotada em **Docker**.
-- Manifests Kubernetes em `k8s/`:
-  - `mongo.yaml`
-  - `backend-deployment.yaml` / `backend-service.yaml`
-  - `frontend-deployment.yaml` / `frontend-service.yaml`
-- Acesso à aplicação via:
-  - `kubectl port-forward svc/frontend 3000:3000`
-  - Navegador em `http://localhost:3000`
-
-## Infra como Código (Terraform)
-
-- Código Terraform em `terraform/`:
-  - `main.tf`: provider AWS + configuração base.
-  - `eks.tf`: recursos e/ou leituras relacionadas ao EKS.
-  - `variables.tf`: definição de variáveis (região, nome do cluster, tamanhos etc.).
-  - `outputs.tf`: informações que o Terraform exporta (por exemplo, nome do cluster, ARN, etc.).
-- Comandos locais:
-  - `terraform init`
-  - `terraform validate`
-  - `terraform plan` (será usado depois com credenciais AWS)
-
-## CI/CD no GitHub Actions
-
-- Workflow **CI - Docker build** (`.github/workflows/ci-docker.yml`):
-  - Build das imagens Docker de frontend e backend.
-- Workflow **Terraform validation workflow** (`.github/workflows/terraform.yml`):
-  - `terraform init -backend=false`
-  - `terraform fmt -check`
-  - `terraform validate`
-
-
+Projeto desenvolvido em equipe para o Super Desafio Mensal.
