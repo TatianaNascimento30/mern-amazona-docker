@@ -1,0 +1,44 @@
+name: K8s - Validate Manifests
+
+on:
+  push:
+    paths:
+      - "k8s/**"
+      - ".github/workflows/k8s-validate.yml"
+  pull_request:
+    paths:
+      - "k8s/**"
+      - ".github/workflows/k8s-validate.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: YAML syntax check
+        run: |
+          python -m pip install --upgrade pip
+          pip install yamllint
+          yamllint -d "{extends: default, rules: {line-length: disable}}" k8s
+
+      - name: Install kubeconform
+        run: |
+          set -e
+          KUBECONFORM_VERSION="v0.6.7"
+          curl -L "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz" -o kubeconform.tar.gz
+          tar -xzf kubeconform.tar.gz kubeconform
+          chmod +x kubeconform
+          sudo mv kubeconform /usr/local/bin/kubeconform
+
+      - name: Validate Kubernetes manifests (schema)
+        run: |
+          # Ajuste a versão se o cluster de vocês for outra (ex.: 1.28.0)
+          K8S_VERSION="1.27.0"
+          kubeconform \
+            -kubernetes-version "${K8S_VERSION}" \
+            -summary \
+            -strict \
+            -ignore-missing-schemas \
+            k8s/*.yaml
