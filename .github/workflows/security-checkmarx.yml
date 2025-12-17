@@ -1,0 +1,40 @@
+name: Security - Checkmarx One (SAST, SCA, IaC)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  checkmarx-one-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Checkmarx One Scan
+        uses: Checkmarx/ast-github-action@v2
+        with:
+          base_uri: https://eu.ast.checkmarx.net
+          cx_tenant: beta_nova8
+          cx_client_id: ${{ secrets.CX_CLIENT_ID }}
+          cx_client_secret: ${{ secrets.CX_CLIENT_SECRET }}
+
+          project_name: "Desafio Time B - mern-amazona-docker"
+          branch: ${{ github.ref }}
+
+          additional_params: >-
+            --scan-types sast,sca,iac-security
+            --report-format sarif
+            --output-path .
+
+      - name: Upload SARIF file to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: cx_result.sarif
