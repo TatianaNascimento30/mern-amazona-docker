@@ -1,39 +1,30 @@
-name: Terraform CI
+﻿name: Terraform CI
 
 on:
   push:
-    branches: [ main ]
-    paths:
-      - 'terraform/**'
-      - '.github/workflows/terraform.yml'
+    branches: ["main"]
   pull_request:
-    branches: [ main ]
-    paths:
-      - 'terraform/**'
-      - '.github/workflows/terraform.yml'
 
 jobs:
   terraform:
-    name: Validate Terraform
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform/k8s-minikube
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.9.5
+          terraform_version: 1.14.3
 
-      - name: Terraform Init
-        working-directory: terraform
-        run: terraform init -backend=false
-
-      - name: Terraform Format Check
-        working-directory: terraform
+      - name: Terraform fmt
         run: terraform fmt -check
 
-      - name: Terraform Validate
-        working-directory: terraform
+      - name: Terraform init
+        run: terraform init -input=false
+
+      - name: Terraform validate
         run: terraform validate

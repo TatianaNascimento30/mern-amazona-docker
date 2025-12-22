@@ -2,30 +2,23 @@
 # NODE / JAVASCRIPT
 # ----------------------------------------
 
-# Dependencies
 node_modules/
 .pnp/
 .pnp.js
 
-# Env files (NUNCA commitá-los)
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Testing
 coverage/
-
-# Production build
 build/
 
-# Misc
 .DS_Store
 
 
@@ -33,7 +26,6 @@ build/
 # DOCKER
 # ----------------------------------------
 
-# Arquivos criados pelo Docker
 docker-volume/
 *.tar
 
@@ -42,30 +34,34 @@ docker-volume/
 # TERRAFORM
 # ----------------------------------------
 
-# Diretório interno do Terraform
-.terraform/
+# Cache interno (qualquer pasta)
+**/.terraform/*
 
-# Arquivos de estado (extremamente sensíveis)
+# State (sensível)
 *.tfstate
-*.tfstate.backup
+*.tfstate.*
 .terraform.tfstate.lock.info
 
-# Arquivos de variáveis (também podem conter segredos!)
+# Variáveis (podem conter segredos)
 *.tfvars
 *.auto.tfvars
 
-# Arquivos de erro/lock/crash
+# Crash / erro
 crash.log
+crash.*.log
 
-# Arquivos de override (não devem ir para o repositório)
+# Overrides
 override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
 
-# Arquivos gerados automaticamente
+# Config local
 .terraformrc
 terraform.rc
+
+# Backups
+*.bak
 
 
 # ----------------------------------------

@@ -1,115 +1,124 @@
 # MERN Amazona — Arquitetura Containerizada
 
-Projeto desenvolvido para o **Super Desafio Mensal**, com foco na construção de uma **arquitetura integrada, funcional e escalável**, utilizando Docker, Kubernetes, CI/CD e Infrastructure as Code (IaC).
+Projeto desenvolvido para o **Super Desafio Mensal**, com foco na construção de uma **arquitetura moderna, integrada e reproduzível**, utilizando Docker, Kubernetes, CI/CD e Infrastructure as Code (IaC).
 
 ---
 
-## Objetivo
-Projetar e implementar uma arquitetura moderna para uma aplicação **MERN**, integrando:
+## 🎯 Objetivo
+
+Projetar e implementar uma arquitetura para uma aplicação **MERN**, integrando:
 
 - Containers Docker  
-- Orquestração com Kubernetes (AWS EKS)  
+- Orquestração com Kubernetes  
 - CI/CD com GitHub Actions  
 - Segurança no pipeline (SAST, SCA, IaC)  
-- Terraform como base de Infrastructure as Code  
+- Infrastructure as Code com Terraform  
+
+O projeto foi entregue com **execução local via Minikube**, mantendo **AWS EKS como arquitetura-alvo para produção**.
 
 ---
 
 ## Visão Geral da Arquitetura
+
+### Componentes
 - **Frontend:** React  
 - **Backend:** Node.js / Express  
 - **Banco de Dados:** MongoDB  
 - **Containers:** Docker  
-- **Orquestração:** Kubernetes (AWS EKS)  
-- **CI/CD:** GitHub Actions  
+- **Orquestração:** Kubernetes  
 - **IaC:** Terraform  
+- **CI/CD:** GitHub Actions  
 
-A arquitetura foi projetada para permitir execução local via Docker e execução em ambiente Kubernetes no AWS EKS.
-
-# Documentação detalhada:
-- Arquitetura: `docs/arquitetura.md`
-- Kubernetes: `docs/kubernetes.md`
-- Terraform: `docs/terraform.md`
-- Evidências: `docs/evidencias.md`
+### Ambientes
+- **Local / Demo:** Docker Compose e Kubernetes (Minikube)
+- **Produção (arquitetura alvo):** AWS EKS
 
 ---
 
 ## Execução local com Docker (opcional)
 
-Utilizado para desenvolvimento e validação local, sem dependência da AWS.
+Utilizado para desenvolvimento e validação local, sem dependência de Kubernetes.
 
 docker compose up -d --build
 
-# Acessos
+## Acessos
 Frontend: http://localhost:3000
 
 Backend: http://localhost:4000/api/products
 
-# Execução no Kubernetes (AWS EKS)
-A aplicação foi implantada em um cluster Kubernetes no AWS EKS, utilizando manifests declarativos localizados na pasta k8s/.
+### Execução no Kubernetes (Minikube)
+A aplicação é implantada em um cluster Kubernetes local utilizando Minikube, com manifests declarativos localizados na pasta k8s/.
 
-# Aplicação dos manifests
+## Aplicação dos manifests (manual)
+bash
+Copiar código
+kubectl apply -f k8s/
 
-kubectl apply -f k8s/mongo.yaml
-kubectl apply -f k8s/backend-configmap.yaml
-kubectl apply -f k8s/backend-secret.yaml
-kubectl apply -f k8s/backend-deployment.yaml
-kubectl apply -f k8s/backend-service.yaml
-kubectl apply -f k8s/frontend-deployment.yaml
-kubectl apply -f k8s/frontend-service.yaml
-
-# Validação
-
+## Validação
+bash
 Copiar código
 kubectl get pods
 kubectl get svc
 
-# Acesso à aplicação
+## Acesso à aplicação
+Para evitar exposição externa:
 
-Para evitar custos adicionais com serviços do tipo LoadBalancer, o acesso foi realizado via port-forward:
-kubectl port-forward svc/frontend 3000:3000
+kubectl port-forward -n desafio-time-b svc/frontend 3000:3000
 
-
-# A aplicação pode ser acessada em:
+## Aplicação disponível em:
 
 http://localhost:3000
 
-# Detalhes técnicos: docs/kubernetes.md
+### Terraform (Infrastructure as Code)
 
-# Terraform (Infrastructure as Code)
+O Terraform é utilizado neste projeto como orquestrador de infraestrutura Kubernetes local, com os seguintes objetivos:
 
-O Terraform foi utilizado neste projeto como base de Infrastructure as Code, com foco em:
+Padronizar a aplicação dos manifests Kubernetes
 
-Padronização do código de infraestrutura
+Garantir reprodutibilidade do ambiente
 
-Validação automática via pipeline CI
+Demonstrar abordagem IaC mesmo em ambiente local
 
-Preparação para evolução futura do provisionamento completo
+Preparar o projeto para evolução futura em cloud (AWS EKS)
 
-# A validação é executada via GitHub Actions utilizando:
+## Fluxo Terraform (Minikube)
 
+terraform init
+terraform plan
+terraform apply
+terraform destroy
+
+Internamente, o Terraform executa comandos kubectl via null_resource, garantindo:
+
+Criação do namespace
+
+Deploy completo da aplicação
+
+Destroy controlado do ambiente
+
+### CI/CD (GitHub Actions)
+
+O projeto possui pipelines automatizadas:
+
+## CI
+
+Build das imagens Docker (frontend e backend)
+
+## Terraform CI
 terraform init
 
 terraform fmt
 
 terraform validate
 
-# Detalhes: docs/terraform.md
+## Kubernetes
 
-# CI/CD (GitHub Actions)
-O projeto possui pipelines automatizadas utilizando GitHub Actions:
+Validação de manifests YAML
 
-CI - Docker build
-Build das imagens Docker de frontend e backend.
+Validação de schema Kubernetes
 
-Terraform CI
-Validação do código Terraform.
-
-K8s - Validate Manifests
-Validação de sintaxe YAML e schema dos manifests Kubernetes.
-
-# Segurança 
-A segurança está integrada à pipeline CI/CD com foco em:
+### Segurança
+A segurança está integrada ao pipeline CI/CD, incluindo:
 
 SAST
 
@@ -117,14 +126,21 @@ SCA
 
 IaC Security
 
-Ferramentas:
+## Ferramentas utilizadas:
 
-Checkmarx
+Checkmarx One
 
-# Evidências
-As evidências de funcionamento da aplicação (prints e validações) estão documentadas em:
+### Documentação complementar
 
-docs/evidencias.md
+Arquitetura: docs/arquitetura.md
+
+Kubernetes: docs/kubernetes.md
+
+Terraform: docs/terraform.md
+
+Evidências: docs/evidencias.md
+
+### Evidências
+Prints e validações da aplicação em execução estão disponíveis em:
 
 docs/evidencias/
-
