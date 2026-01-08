@@ -4,10 +4,21 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
+    branches: [ "main" ]
 
 jobs:
   mend:
     runs-on: ubuntu-latest
+
+    env:
+      # ===== Mend Authentication =====
+      MEND_EMAIL: ${{ secrets.MEND_EMAIL }}
+      MEND_USER_KEY: ${{ secrets.MEND_USER_KEY }}
+      MEND_URL: ${{ secrets.MEND_URL }}
+
+      # ===== Mend Scope (cria App e Project automaticamente) =====
+      # Formato: Organization//Application//Project
+      MEND_SCOPE: "NOVA8 Advise Azure GitHub Jenkins//CLI//mern-amazona-docker"
 
     steps:
       - name: Checkout repository
@@ -19,18 +30,30 @@ jobs:
           chmod +x mend
           sudo mv mend /usr/local/bin/mend
 
-      - name: Mend Auth Login
-        env:
-          MEND_URL: ${{ secrets.MEND_URL }}
-          MEND_EMAIL: ${{ secrets.MEND_EMAIL }}
-          MEND_USER_KEY: ${{ secrets.MEND_USER_KEY }}
-        run: |
-          mend auth login --non-interactive
+      - name: Mend Version
+        run: mend version
 
+      - name: Mend Auth Info (debug)
+        run: mend auth info
+        continue-on-error: true
+
+      # ==============================
+      # SCA – Software Composition Analysis
+      # ==============================
       - name: Mend SCA Scan (Dependencies)
         run: |
-          mend dep -u -s "*//CLI//mern-amazona-docker"
+          mend dep \
+            --scope "$MEND_SCOPE" \
+            --update \
+            --non-interactive \
+            --persist-logs
 
+      # ==============================
+      # SAST – Static Application Security Testing
+      # ==============================
       - name: Mend SAST Scan (Code)
         run: |
-          mend code -u -s "*//CLI//mern-amazona-docker"
+          mend code \
+            --scope "$MEND_SCOPE" \
+            --non-interactive \
+            --persist-logs
