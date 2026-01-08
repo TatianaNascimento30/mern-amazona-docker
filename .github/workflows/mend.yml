@@ -4,8 +4,6 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
-    branches: [ "main" ]
-  workflow_dispatch:
 
 jobs:
   mend:
@@ -17,26 +15,22 @@ jobs:
 
       - name: Download Mend CLI
         run: |
-          curl -L https://downloads.mend.io/cli/linux_amd64/mend -o mend
+          curl -L https://downloads.mend.io/cli/linux/mend -o mend
           chmod +x mend
+          sudo mv mend /usr/local/bin/mend
 
-      - name: Mend Auth Info
+      - name: Mend Auth Login
         env:
           MEND_URL: ${{ secrets.MEND_URL }}
           MEND_EMAIL: ${{ secrets.MEND_EMAIL }}
           MEND_USER_KEY: ${{ secrets.MEND_USER_KEY }}
-        run: ./mend auth info
+        run: |
+          mend auth login --non-interactive
 
       - name: Mend SCA Scan (Dependencies)
-        env:
-          MEND_URL: ${{ secrets.MEND_URL }}
-          MEND_EMAIL: ${{ secrets.MEND_EMAIL }}
-          MEND_USER_KEY: ${{ secrets.MEND_USER_KEY }}
-        run: ./mend dep -u -s "*//CLI//mern-amazona-docker"
+        run: |
+          mend dep -u -s "*//CLI//mern-amazona-docker"
 
       - name: Mend SAST Scan (Code)
-        env:
-          MEND_URL: ${{ secrets.MEND_URL }}
-          MEND_EMAIL: ${{ secrets.MEND_EMAIL }}
-          MEND_USER_KEY: ${{ secrets.MEND_USER_KEY }}
-        run: ./mend code -u -s "*//CLI//mern-amazona-docker"
+        run: |
+          mend code -u -s "*//CLI//mern-amazona-docker"
