@@ -1,0 +1,42 @@
+name: Mend Security Scan (SCA + SAST)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  mend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download Mend CLI
+        run: |
+          curl -L https://downloads.mend.io/cli/linux_amd64/mend -o mend
+          chmod +x mend
+
+      - name: Mend Auth Info
+        env:
+          MEND_URL: ${{ secrets.MEND_URL }}
+          MEND_EMAIL: ${{ secrets.MEND_EMAIL }}
+          MEND_USER_KEY: ${{ secrets.MEND_USER_KEY }}
+        run: ./mend auth info
+
+      - name: Mend SCA Scan (Dependencies)
+        env:
+          MEND_URL: ${{ secrets.MEND_URL }}
+          MEND_EMAIL: ${{ secrets.MEND_EMAIL }}
+          MEND_USER_KEY: ${{ secrets.MEND_USER_KEY }}
+        run: ./mend dep -u -s "*//CLI//mern-amazona-docker"
+
+      - name: Mend SAST Scan (Code)
+        env:
+          MEND_URL: ${{ secrets.MEND_URL }}
+          MEND_EMAIL: ${{ secrets.MEND_EMAIL }}
+          MEND_USER_KEY: ${{ secrets.MEND_USER_KEY }}
+        run: ./mend code -u -s "*//CLI//mern-amazona-docker"
