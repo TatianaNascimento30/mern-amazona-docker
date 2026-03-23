@@ -13,10 +13,9 @@ jobs:
       - name: Run Checkmarx Scan via Docker
         run: |
           docker run --rm \
-            -v ${{ github.workspace }}:/workspace \
-            -w /workspace \
-            checkmarx/ast-cli:latest scan create \
-            --source . \
+            -v ${{ github.workspace }}:/src \
+            checkmarx/ast-cli:2.3.28 scan create \
+            --source-dir /src \
             --base-uri https://eu.ast.checkmarx.net \
             --tenant beta_nova8 \
             --client-id ${{ secrets.CX_CLIENT_ID }} \
@@ -25,4 +24,4 @@ jobs:
             --branch main \
             --scan-types sast,sca,iac-security \
             --report-format sarif \
-            --output-path .
+            --output-path /src
