@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: ["main"]
 
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   checkmarx-cli:
     runs-on: ubuntu-latest
@@ -18,7 +22,9 @@ jobs:
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/src \
+            -w /src \
             checkmarx/ast-cli:latest scan create \
+            --source-dir /src \
             --base-uri https://eu.ast.checkmarx.net \
             --tenant beta_nova8 \
             --client-id ${{ secrets.CX_CLIENT_ID }} \
