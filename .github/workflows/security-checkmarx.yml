@@ -1,18 +1,27 @@
-name: Test Checkmarx CLI
+name: Security - Checkmarx One (CLI Docker)
 
 on:
   push:
 
 jobs:
-  test-cli:
+  checkmarx-cli:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run Checkmarx CLI (debug)
+      - name: Run Checkmarx Scan via Docker
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/workspace \
             -w /workspace \
-            checkmarx/ast-cli:latest version
+            checkmarx/ast-cli:latest scan create \
+            --base-uri https://eu.ast.checkmarx.net \
+            --tenant beta_nova8 \
+            --client-id ${{ secrets.CX_CLIENT_ID }} \
+            --client-secret ${{ secrets.CX_CLIENT_SECRET }} \
+            --project-name "Desafio Time B - mern-amazona-docker" \
+            --branch main \
+            --scan-types sast,sca,iac-security \
+            --report-format sarif \
+            --output-path .
