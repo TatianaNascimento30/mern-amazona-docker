@@ -18,20 +18,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Run Checkmarx One Scan
-        uses: checkmarx/ast-github-action@2.3.28  # 👈 ajuste aqui
-        with:
-          base_uri: https://eu.ast.checkmarx.net
-          cx_tenant: beta_nova8
-          cx_client_id: ${{ secrets.CX_CLIENT_ID }}
-          cx_client_secret: ${{ secrets.CX_CLIENT_SECRET }}
+      - name: Install Checkmarx CLI
+        run: |
+          curl -L https://github.com/Checkmarx/ast-cli/releases/latest/download/ast-cli-linux-x64.tar.gz -o ast-cli.tar.gz
+          tar -xzf ast-cli.tar.gz
+          chmod +x cx
 
-          project_name: "Desafio Time B - mern-amazona-docker"
-          branch: ${{ github.ref }}
-
-          additional_params: >-
-            --scan-types sast,sca,iac-security
-            --report-format sarif
+      - name: Run Checkmarx Scan
+        run: |
+          ./cx scan create \
+            --base-uri https://eu.ast.checkmarx.net \
+            --tenant beta_nova8 \
+            --client-id ${{ secrets.CX_CLIENT_ID }} \
+            --client-secret ${{ secrets.CX_CLIENT_SECRET }} \
+            --project-name "Desafio Time B - mern-amazona-docker" \
+            --branch ${{ github.ref }} \
+            --scan-types sast,sca,iac-security \
+            --report-format sarif \
             --output-path .
 
       - name: Upload SARIF file to GitHub Security
