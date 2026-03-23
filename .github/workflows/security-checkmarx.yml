@@ -1,28 +1,40 @@
-name: Security - Checkmarx One (CLI Local)
+name: Security - Checkmarx One (SAST, SCA, IaC)
 
 on:
   push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  security-events: write
 
 jobs:
-  checkmarx-cli:
+  checkmarx-one-scan:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Install Checkmarx CLI
-        run: |
-          curl -s https://raw.githubusercontent.com/Checkmarx/ast-cli/main/install.sh | bash
+      - name: Run Checkmarx One Scan
+        uses: checkmarx/ast-github-action@v2
+        with:
+          base_uri: https://eu.ast.checkmarx.net
+          cx_tenant: beta_nova8
+          cx_client_id: ${{ secrets.CX_CLIENT_ID }}
+          cx_client_secret: ${{ secrets.CX_CLIENT_SECRET }}
 
-      - name: Run Checkmarx Scan
-        run: |
-          ./cx scan create \
-            --base-uri https://eu.ast.checkmarx.net \
-            --tenant beta_nova8 \
-            --client-id ${{ secrets.CX_CLIENT_ID }} \
-            --client-secret ${{ secrets.CX_CLIENT_SECRET }} \
-            --project-name "Desafio Time B - mern-amazona-docker" \
-            --branch main \
-            --scan-types sast,sca,iac-security \
-            --report-format sarif \
+          project_name: "Desafio Time B - mern-amazona-docker"
+          branch: ${{ github.ref }}
+
+          additional_params: >-
+            --scan-types sast,sca,iac-security
+            --report-format sarif
             --output-path .
+
+      - name: Upload SARIF file to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: cx_result.sarif
