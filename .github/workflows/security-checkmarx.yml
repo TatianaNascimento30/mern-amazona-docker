@@ -38,7 +38,3 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: cx_result.
-
-git commit --allow-empty -m "test checkmarx action"
-git push
-          
