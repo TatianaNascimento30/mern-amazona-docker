@@ -10,17 +10,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Zip source code
-        run: |
-          zip -r source.zip . -x "*.git*"
-
       - name: Run Checkmarx Scan via Docker
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/workspace \
             -w /workspace \
             checkmarx/ast-cli:latest scan create \
-            --scan-path source.zip \
+            --source . \
             --base-uri https://eu.ast.checkmarx.net \
             --tenant beta_nova8 \
             --client-id ${{ secrets.CX_CLIENT_ID }} \
