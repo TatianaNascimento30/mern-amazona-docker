@@ -1,4 +1,4 @@
-name: Security - Checkmarx One (CLI)
+name: Security - Checkmarx One (CLI Docker)
 
 on:
   push:
@@ -14,13 +14,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Checkmarx CLI (via script oficial)
+      - name: Run Checkmarx Scan via Docker
         run: |
-          curl -L https://raw.githubusercontent.com/Checkmarx/ast-cli/main/install.sh | bash
-
-      - name: Run Checkmarx Scan
-        run: |
-          cx scan create \
+          docker run --rm \
+            -v ${{ github.workspace }}:/src \
+            checkmarx/ast-cli:latest scan create \
             --base-uri https://eu.ast.checkmarx.net \
             --tenant beta_nova8 \
             --client-id ${{ secrets.CX_CLIENT_ID }} \
@@ -29,7 +27,7 @@ jobs:
             --branch ${{ github.ref }} \
             --scan-types sast,sca,iac-security \
             --report-format sarif \
-            --output-path .
+            --output-path /src
 
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v3
