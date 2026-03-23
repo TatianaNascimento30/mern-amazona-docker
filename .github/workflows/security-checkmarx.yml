@@ -1,4 +1,4 @@
-name: Security - Checkmarx One (CLI Docker)
+name: Security - Checkmarx One (CLI Local)
 
 on:
   push:
@@ -10,16 +10,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Zip source code
+      - name: Install Checkmarx CLI
         run: |
-          zip -r source.zip . -x "*.git*"
+          curl -s https://raw.githubusercontent.com/Checkmarx/ast-cli/main/install.sh | bash
 
-      - name: Run Checkmarx Scan via Docker
+      - name: Run Checkmarx Scan
         run: |
-          docker run --rm \
-            -v ${{ github.workspace }}:/src \
-            checkmarx/ast-cli:2.3.28 scan create \
-            --scan-path /src/source.zip \
+          ./cx scan create \
             --base-uri https://eu.ast.checkmarx.net \
             --tenant beta_nova8 \
             --client-id ${{ secrets.CX_CLIENT_ID }} \
@@ -28,4 +25,4 @@ jobs:
             --branch main \
             --scan-types sast,sca,iac-security \
             --report-format sarif \
-            --output-path /src
+            --output-path .
