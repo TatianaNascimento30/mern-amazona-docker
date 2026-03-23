@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Checkmarx One Scan
-        uses: checkmarx/ast-github-action@v2  # 👈 ajuste aqui
+        uses: checkmarx/ast-github-action@v1  # 👈 ajuste aqui
         with:
           base_uri: https://eu.ast.checkmarx.net
           cx_tenant: beta_nova8
